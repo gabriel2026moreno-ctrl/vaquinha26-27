@@ -21,7 +21,48 @@
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        h1 { color: #2c3e50; }
+        h1 { color: #2c3e50; margin-bottom: 5px; }
+        .subtitle { color: #666; margin-top: 0; font-size: 14px; }
+        
+        /* Estilos da Barra de Progresso */
+        .meta-box {
+            background-color: #fff;
+            border: 2px solid #eee;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .meta-text {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        .progress-bar-container {
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            height: 25px;
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
+            background-color: #32bcad;
+            height: 100%;
+            width: 0%; /* Isso é atualizado pelo JavaScript */
+            transition: width 1s ease-in-out;
+        }
+        .progress-percentage {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            top: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
         .highlight {
             background-color: #e8f5e9;
             color: #2e7d32;
@@ -30,6 +71,27 @@
             font-weight: bold;
             margin: 20px 0;
         }
+
+        /* Estilos da Escolha de Número */
+        .number-box {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 1px solid #ffeeba;
+        }
+        .number-box input {
+            padding: 10px;
+            font-size: 18px;
+            width: 80px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
         .pix-box {
             background: #f1f3f5;
             padding: 15px;
@@ -53,14 +115,8 @@
             text-decoration: none;
             box-sizing: border-box;
         }
-        .btn-pix {
-            background-color: #32bcad;
-            color: white;
-        }
-        .btn-whatsapp {
-            background-color: #25D366;
-            color: white;
-        }
+        .btn-pix { background-color: #32bcad; color: white; }
+        .btn-whatsapp { background-color: #25D366; color: white; }
         .btn:hover { opacity: 0.9; }
     </style>
 </head>
@@ -68,34 +124,94 @@
 
     <div class="container">
         <h1>Vaquinha do Gabriel 🏠</h1>
-        <p>Estou arrecadando fundos para me ajudar a comprar os móveis da minha casa. Qualquer contribuição é muito bem-vinda e faz toda a diferença!</p>
+        <p class="subtitle">Me ajude a montar os móveis da minha casa nova!</p>
+        
+        <!-- Barra de Progresso -->
+        <div class="meta-box">
+            <div class="meta-text">
+                <span id="texto-arrecadado">R$ 0,00</span>
+                <span>Meta: R$ 1.800,00</span>
+            </div>
+            <div class="progress-bar-container">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-percentage" id="progress-percentage">0%</div>
+            </div>
+        </div>
         
         <div class="highlight">
-            🎉 Sorteio Especial: Ao participar da vaquinha, você concorre automaticamente a um prêmio de R$ 150,00!
+            🎉 Sorteio Especial: Ao contribuir, você concorre a um prêmio de R$ 150,00!
         </div>
 
-        <h3>Como contribuir:</h3>
-        <p>Copie a chave Pix abaixo e cole no aplicativo do seu banco na opção "Pix Copia e Cola".</p>
+        <h3>1. Faça sua contribuição:</h3>
+        <p>Copie a chave Pix abaixo e pague no app do seu banco (Qualquer valor ajuda!).</p>
         
         <div class="pix-box" id="chavePix">00020126580014br.gov.bcb.pix0136daf011bb-906f-480e-89dd-7aee44050f115204000053039865802BR5914Gabriel Moreno6009Sao Paulo62240520daqr346038556490417663043019</div>
-        
         <button class="btn btn-pix" onclick="copiarPix()">📋 Copiar Chave Pix</button>
 
-        <p style="margin-top: 30px;">Já fez sua contribuição ou quer tirar alguma dúvida? Me mande o comprovante no WhatsApp:</p>
-        <a href="https://wa.me/message/57K72I7XEIKQH1" target="_blank" class="btn btn-whatsapp">💬 Falar no WhatsApp</a>
+        <!-- Escolha do Número para o Sorteio -->
+        <div class="number-box">
+            <h3>2. Escolha seu número da sorte</h3>
+            <p>Escolha um número entre <strong>0 e 500</strong> para o sorteio de R$ 150:</p>
+            <input type="number" id="numeroSorteio" min="0" max="500" placeholder="Ex: 42">
+        </div>
+
+        <h3>3. Envie o comprovante:</h3>
+        <p>Para validar seu número no sorteio, me envie o comprovante no WhatsApp!</p>
+        <button class="btn btn-whatsapp" onclick="enviarWhatsApp()">💬 Enviar Comprovante no WhatsApp</button>
     </div>
 
     <script>
+        // =========================================================================
+        // GABRIEL: ATUALIZE O VALOR ABAIXO SEMPRE QUE RECEBER UMA DOAÇÃO!
+        // Exemplo: se já arrecadou 150 reais, mude o 0.00 para 150.00
+        // =========================================================================
+        
+        var valorJaArrecadado = 0.00; 
+        
+        // =========================================================================
+
+        var meta = 1800.00;
+
+        // Função para atualizar visualmente a barra de progresso
+        function atualizarBarra() {
+            var porcentagem = (valorJaArrecadado / meta) * 100;
+            if(porcentagem > 100) porcentagem = 100; // Evita que a barra passe dos limites
+
+            // Atualiza os textos na tela
+            document.getElementById("texto-arrecadado").innerText = valorJaArrecadado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            document.getElementById("progress-fill").style.width = porcentagem + "%";
+            document.getElementById("progress-percentage").innerText = Math.round(porcentagem) + "%";
+        }
+
+        // Função para copiar o Pix
         function copiarPix() {
             var chave = document.getElementById("chavePix").innerText;
             navigator.clipboard.writeText(chave).then(function() {
-                alert("Chave Pix Copia e Cola copiada com sucesso! Agora é só colar no app do seu banco.");
+                alert("Chave Pix copiada com sucesso! Cole no app do seu banco.");
             }, function() {
-                alert("Erro ao copiar a chave. Por favor, selecione o texto e copie manualmente.");
+                alert("Erro ao copiar a chave. Copie o texto manualmente.");
             });
         }
+
+        // Função para enviar para o WhatsApp do Gabriel (84 99674-2740)
+        function enviarWhatsApp() {
+            var numero = document.getElementById("numeroSorteio").value;
+            
+            if (numero === "" || numero < 0 || numero > 500) {
+                alert("⚠️ Por favor, digite um número válido entre 0 e 500 na caixa amarela antes de clicar no WhatsApp.");
+                return;
+            }
+
+            var telefone = "5584996742740";
+            var mensagem = "Olá Gabriel! Fiz uma contribuição para a sua vaquinha dos móveis e escolhi o número *" + numero + "* para o sorteio de R$ 150. Segue o meu comprovante: ";
+            var url = "https://wa.me/" + telefone + "?text=" + encodeURIComponent(mensagem);
+            
+            window.open(url, '_blank');
+        }
+
+        // Inicia a barra de progresso assim que a página carrega
+        window.onload = atualizarBarra;
     </script>
 
 </body>
-      </html>
-      
+</html>
