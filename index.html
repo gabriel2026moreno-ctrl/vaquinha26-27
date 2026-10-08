@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vaquinha - Móveis da Casa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .container {
+            max-width: 500px;
+            background: white;
+            margin: 20px auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; }
+        .highlight {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .pix-box {
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 8px;
+            word-wrap: break-word;
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 15px;
+            border: 1px dashed #ccc;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            box-sizing: border-box;
+        }
+        .btn-pix {
+            background-color: #32bcad;
+            color: white;
+        }
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+        }
+        .btn:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Vaquinha do Gabriel 🏠</h1>
+        <p>Estou arrecadando fundos para me ajudar a comprar os móveis da minha casa. Qualquer contribuição é muito bem-vinda e faz toda a diferença!</p>
+        
+        <div class="highlight">
+            🎉 Sorteio Especial: Ao participar da vaquinha, você concorre automaticamente a um prêmio de R$ 150,00!
+        </div>
+
+        <h3>Como contribuir:</h3>
+        <p>Copie a chave Pix abaixo e cole no aplicativo do seu banco na opção "Pix Copia e Cola".</p>
+        
+        <div class="pix-box" id="chavePix">00020126580014br.gov.bcb.pix0136daf011bb-906f-480e-89dd-7aee44050f115204000053039865802BR5914Gabriel Moreno6009Sao Paulo62240520daqr346038556490417663043019</div>
+        
+        <button class="btn btn-pix" onclick="copiarPix()">📋 Copiar Chave Pix</button>
+
+        <p style="margin-top: 30px;">Já fez sua contribuição ou quer tirar alguma dúvida? Me mande o comprovante no WhatsApp:</p>
+        <a href="https://wa.me/message/57K72I7XEIKQH1" target="_blank" class="btn btn-whatsapp">💬 Falar no WhatsApp</a>
+    </div>
+
+    <script>
+        function copiarPix() {
+            var chave = document.getElementById("chavePix").innerText;
+            navigator.clipboard.writeText(chave).then(function() {
+                alert("Chave Pix Copia e Cola copiada com sucesso! Agora é só colar no app do seu banco.");
+            }, function() {
+                alert("Erro ao copiar a chave. Por favor, selecione o texto e copie manualmente.");
+            });
+        }
+    </script>
+
+</body>
+      </html>
+      
